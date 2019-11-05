@@ -1,0 +1,53 @@
+CREATE TABLE "users" (
+  "user_id" serial,
+  "role_id" integer,
+  "first_name" varchar NOT NULL,
+  "last_name" varchar NOT NULL,
+  "username" varchar UNIQUE NOT NULL,
+  "password" varchar NOT NULL,
+  "email" varchar UNIQUE,
+  "created_on" timestamp,
+  PRIMARY KEY ("user_id", "email")
+);
+
+CREATE TABLE "role" (
+  "role_id" serial PRIMARY KEY,
+  "role_name" varchar UNIQUE NOT NULL,
+  "grant_date" timestamp
+);
+
+CREATE TABLE "article" (
+  "article_id" serial PRIMARY KEY,
+  "user_id" integer NOT NULL,
+  "article_title" varchar UNIQUE NOT NULL,
+  "article_body" varchar UNIQUE,
+  "flag_id" varchar,
+  "created_on" timestamp
+);
+
+CREATE TABLE "comment" (
+  "comment_id" serial PRIMARY KEY,
+  "user_id" integer NOT NULL,
+  "article_id" integer NOT NULL,
+  "comment_body" varchar UNIQUE,
+  "flag_id" varchar,
+  "created_on" timestamp
+);
+
+CREATE TABLE "flag" (
+  "flag_id" serial PRIMARY KEY,
+  "flag_reason" varchar,
+  "flag_date" timestamp
+);
+
+ALTER TABLE "users" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("role_id");
+
+ALTER TABLE "article" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
+
+ALTER TABLE "comment" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("user_id");
+
+ALTER TABLE "comment" ADD FOREIGN KEY ("article_id") REFERENCES "article" ("article_id");
+
+ALTER TABLE "comment" ADD FOREIGN KEY ("flag_id") REFERENCES "flag" ("flag_id");
+
+ALTER TABLE "article" ADD FOREIGN KEY ("flag_id") REFERENCES "flag" ("flag_id");
